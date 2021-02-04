@@ -42,7 +42,7 @@ ops.do_classifier = true; % runs a classification validation every pass.
                            % true.
 ops.banks_to_validate = 1:2;   % restricts classification validation to
                                % deepest 2 banks, as used in the paper.
-ops.do_plot = true;            % plot optimization summary
+ops.do_plot = false;            % plot optimization summary
 ops.save_plot = false;          % save plot summary
 ops.plot_dir = 'results'; % plot save directory                             
                              
