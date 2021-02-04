@@ -4,23 +4,13 @@
 %%%%% a Neuropixel Phase 1 probe.
 %%%%% 
 
-clear;
+function run_channel_optimization(raw_files, ks_dirs, imro_output_filename)
 
 %%%%%
 %%%%% First assemble a cell array of file paths to each dense bank 
 %%%%% recording. Recordings are assumed to be high-pass filtered and sorted 
 %%%%% by Kilosort2.
 %%%%% 
-
-% Should be the settings.xml to parse
-raw_files = {...
-    '/Users/pbotros/Desktop/rat_np_data/2021-02-02_08-29-12/experiment1/recording1/continuous/Neuropix-PXI-100.0/continuous.dat', ...
-    '/Users/pbotros/Desktop/rat_np_data/2021-02-02_08-32-25/experiment1/recording1/continuous/Neuropix-PXI-100.0/continuous.dat', ...
-    };
-ks_dirs = {...
-    '/Users/pbotros/Desktop/rat_np_data/2021-02-02_08-29-12', ...
-    '/Users/pbotros/Desktop/rat_np_data/2021-02-02_08-32-25', ...
-    };
 
 assert(length(raw_files) == length(ks_dirs), 'Need a raw file for each KS dir')
 
@@ -54,7 +44,7 @@ ops.banks_to_validate = 1:2;   % restricts classification validation to
                                % deepest 2 banks, as used in the paper.
 ops.do_plot = true;            % plot optimization summary
 ops.save_plot = false;          % save plot summary
-ops.plot_dir = '../results'; % plot save directory                             
+ops.plot_dir = 'results'; % plot save directory                             
                              
 ops.init_method = 'mucbs';                             
 selection_map = optimize_selection_map(bank_models, ops);
@@ -63,7 +53,7 @@ selection_map = optimize_selection_map(bank_models, ops);
 %%%%% write output map to an .imro file 
 %%%%% 
 
-imro_file_path = 'results/cbs_map.imro';
-write_cbs_imro_file(imro_file_path, selection_map, bank_models);
+write_cbs_imro_file(imro_output_filename, selection_map, bank_models);
 
 fprintf('\n\nSee results directory for optimization summary plots\n');
+end

@@ -28,7 +28,7 @@ function wf = getWaveFormsModified2(gwfparams)
 % wf = getWaveForms(gwfparams);
 
 % Load .dat and KiloSort/Phy output
-fileName = fullfile(gwfparams.dataDir,gwfparams.fileName);           
+fileName = gwfparams.fileName;
 filenamestruct = dir(fileName);
 dataTypeNBytes = numel(typecast(cast(0, gwfparams.dataType), 'uint8')); % determine number of bytes per sample
 nSamp = filenamestruct.bytes/(gwfparams.nCh*dataTypeNBytes);  % Number of samples per channel

@@ -1,12 +1,12 @@
 function bank_model ...
-    = neuropixel_cbs_preprocess(myKsDir, chans_to_use, ops)
+    = neuropixel_cbs_preprocess(ibank, raw_file, myKsDir, chans_to_use, ops)
 
 r = getOr(ops, 'r', 3); % channel-wise pca dimensionality
 nspikes_per_unit = getOr(ops, 'nspikes_per_unit', 100); % number of spikes to analyze per unit (puts a cap on the 
 
 sp = loadKSdir(myKsDir);
 
-bank_model.channel_info = neuropixel_get_channel_info(fullfile(myKsDir, sp.dat_path));
+bank_model.channel_info = neuropixel_get_channel_info(ops, ibank, raw_file); % fullfile(myKsDir, sp.dat_path));
 
 %for now hardcode cluster 
 cluster = unique(sp.spikeTemplates);
@@ -27,12 +27,21 @@ wf_spike_times = ceil(sp.st(ismember(sp.spikeTemplates, cluster)) * 30000);
 wf_spike_clusters = sp.spikeTemplates(ismember(sp.spikeTemplates, cluster));
 
 
-nchan_all = sp.n_channels_dat - 1;
+nchan_all = sp.n_channels_dat;
 
 %initialize gwfparams
 gwfparams.dataDir = myKsDir;
-apD = dir(fullfile(myKsDir, '*ap*.bin'));
-gwfparams.fileName = apD(1).name;
+
+switch ops.acq_software
+    case 'spikeglx'
+        apD = dir(fullfile(myKsDir, '*ap*.bin'));
+        gwfparams.fileName = fullfile(myKsDir, apD(1).name);
+    case 'openephys'
+        gwfparams.fileName = raw_file;
+    otherwise
+        error('unsupported acq_software', acq_software)
+end
+
 gwfparams.dataType = 'int16';
 gwfparams.nCh = sp.n_channels_dat;
 gwfparams.wfWin = [-30 30];

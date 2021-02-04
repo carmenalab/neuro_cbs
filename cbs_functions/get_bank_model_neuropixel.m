@@ -1,4 +1,4 @@
-function bank_models = get_bank_model_neuropixel(raw_files, ops)
+function bank_models = get_bank_model_neuropixel(raw_files, ks_dirs, ops)
 
 % GET_BANK_MODEL_NEUROPIXEL: Performs waveform extraction and filtering for the cbs and mucbs methods.
 %   inputs:
@@ -21,10 +21,7 @@ selection_method = getOr(ops, 'selection_method', 'cbs');
 
 switch probe_version
     case 'phase1'
-        nbanks = 3;        
-        
-        assert(length(raw_files)==nbanks, ...
-            'for a phase1 neuropixel, raw_files must be a cell array of length of 3');
+        nbanks = length(raw_files);        
         
         valid_chans = {};
         for ibank = 1:nbanks
@@ -44,30 +41,28 @@ end
 switch spikesorter
     case 'kilosort2'                
         
-        for ibank = 1:nbanks        
-            ks_dir = fileparts(raw_files{ibank});  
-            
-            switch selection_method
-                case 'cbs'
-                    ops.do_prewhitening = getOr(ops, 'do_prewhitening',...
-                        true);
-                    ops.do_channel_pca = getOr(ops, 'do_channel_pca',...
-                        true);                   
-                                                    
-                case 'mucbs'                                       
-                    ops.do_prewhitening = getOr(ops, 'do_prewhitening', ...
-                        false);
-                    ops.do_channel_pca = getOr(ops, 'do_channel_pca', ...
-                        false);
-                    
-                otherwise
-                    error('selection method %d not supported', ...
-                        selection_method);
+        
+        switch selection_method
+            case 'cbs'
+                ops.do_prewhitening = getOr(ops, 'do_prewhitening',...
+                    true);
+                ops.do_channel_pca = getOr(ops, 'do_channel_pca',...
+                    true);                   
+                                                
+            case 'mucbs'                                       
+                ops.do_prewhitening = getOr(ops, 'do_prewhitening', ...
+                    false);
+                ops.do_channel_pca = getOr(ops, 'do_channel_pca', ...
+                    false);
+            otherwise
+                error('selection method %d not supported', ...
+                    selection_method);
             end            
-            
+        for ibank = 1:nbanks
+            ks_dir = ks_dirs{ibank};
+            raw_file = raw_files{ibank};
             bank_models(ibank) = ...
-                neuropixel_cbs_preprocess(ks_dir, valid_chans{ibank}, ops);
-            
+                neuropixel_cbs_preprocess(ibank, raw_file, ks_dir, valid_chans{ibank}, ops);
         end        
     otherwise
         error('spikesorter not supported', spikesorter);        
