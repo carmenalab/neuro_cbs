@@ -64,7 +64,7 @@ switch acq_software
             channel_info(ichan).ref_type = 0;
             channel_info(ichan).ap_gain = 500;
             channel_info(ichan).lf_gain = 250;
-            channel_info(ichan).is_hipassed = 0;
+            channel_info(ichan).is_hipassed = 1;
         end
     otherwise
         error('acq_software not supported', acq_software);        
