@@ -2,6 +2,7 @@ function [ampscore_bank_assignments, ampscore_select_img] = ...
     optimize_mucbs(ampscores, bank_models, ops)
 
 probe_version = getOr(ops, 'probe_version', 'phase1');
+include_third_bank = getOr(ops, 'include_third_bank', true);
 
 switch probe_version    
     case 'phase1'
@@ -10,7 +11,7 @@ switch probe_version
 
         ampscore_bank_assignments = zeros(1, 384);
         for ich = 1:384
-            avail_ass = neuropixel_get_avail_bank_assignments(ich);
+            avail_ass = neuropixel_get_avail_bank_assignments(ich, include_third_bank);
 
             cand_scores = zeros(1, length(avail_ass));
             for iass = 1:length(avail_ass)

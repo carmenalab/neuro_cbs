@@ -31,7 +31,7 @@ bank_models = get_bank_model_neuropixel(raw_files, ks_dirs, ops);
 %%%%%
 %%%%% optimize selection map
 %%%%% 
-
+ops.include_third_bank = false; % Only assign channels to bank 0 or 1
 ops.do_classifier = true; % runs a classification validation every pass. 
                            % At the end of optimization, the selection
                            % map corresponding with the highest validation

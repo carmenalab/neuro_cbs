@@ -26,7 +26,7 @@ if do_classifier
 end
 
 max_iter = getOr(ops, 'max_iter', 100); % max number of passes through the array.
-
+include_third_bank = getOr(ops, 'include_third_bank', true);
 nchan_all = bank_models(1).nchan_all;
 
 nbanks = length(bank_models);
@@ -45,7 +45,7 @@ for iiter = 1:max_iter
     bank_assignment_chunk = zeros(nchan_all, nchan_all);    
         
     for ch = randperm(nchan_all) % 1 based                
-        avail_ass = neuropixel_get_avail_bank_assignments(ch);               
+        avail_ass = neuropixel_get_avail_bank_assignments(ch, include_third_bank);               
         J = zeros(1, length(avail_ass));        
         current_ass = bank_assignments(ch);
         
