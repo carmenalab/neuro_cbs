@@ -4,7 +4,11 @@
 %%%%% a Neuropixel Phase 1 probe.
 %%%%% 
 
-function run_channel_optimization(raw_files, ks_dirs, imro_output_filename)
+function run_channel_optimization(raw_files, ks_dirs, imro_output_filename, fixed_enabled_channels)
+
+if nargin < 4
+    fixed_enabled_channels = [];
+end
 
 %%%%%
 %%%%% First assemble a cell array of file paths to each dense bank 
@@ -52,6 +56,25 @@ selection_map = optimize_selection_map(bank_models, ops);
 %%%%%
 %%%%% write output map to an .imro file 
 %%%%% 
+
+for i = 1:length(fixed_enabled_channels)
+    to_enable_channel = fixed_enabled_channels(i);
+    selection_index = find(selection_map == to_enable_channel, 1);
+    if ~isempty(selection_index)
+        % Already in the array, don't touch
+        continue
+    end
+    if to_enable_channel > 384
+        to_disable_channel = to_enable_channel - 384;
+    else
+        to_disable_channel = to_enable_channel + 384;
+    end
+    selection_index = find(selection_map == to_disable_channel, 1);
+    if isempty(selection_index)
+        error('Could not find EITHER the channel to disable or enable');
+    end
+    selection_map(selection_index) = to_enable_channel;
+end
 
 write_cbs_imro_file(imro_output_filename, selection_map, bank_models);
 

@@ -59,7 +59,7 @@ switch acq_software
             channel_info(ichan).shank = 1;
             channel_info(ichan).bank = ibank - 1;
             channel_info(ichan).electrode = (ibank-1)*384 + ichan;   
-            channel_info(ichan).row = reshape(repmat(1:192, 2, 1), 1, 384);
+            channel_info(ichan).row = reshape(repmat(1:192, 2, 1), 1, 384) + 192;
             channel_info(ichan).col = repmat([1, 2], 1, 192);
             channel_info(ichan).ref_type = 0;
             channel_info(ichan).ap_gain = 500;
