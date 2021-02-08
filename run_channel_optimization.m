@@ -8,6 +8,8 @@ function run_channel_optimization(raw_files, ks_dirs, imro_output_filename, fixe
 
 if nargin < 4
     fixed_enabled_channels = [];
+elseif iscell(fixed_enabled_channels)
+    fixed_enabled_channels = cell2mat(fixed_enabled_channels);
 end
 
 %%%%%
@@ -58,7 +60,8 @@ selection_map = optimize_selection_map(bank_models, ops);
 %%%%% 
 
 for i = 1:length(fixed_enabled_channels)
-    to_enable_channel = fixed_enabled_channels(i);
+    % Parameter gives 0-based channels, convert to 1-based
+    to_enable_channel = fixed_enabled_channels(i) + 1;
     selection_index = find(selection_map == to_enable_channel, 1);
     if ~isempty(selection_index)
         % Already in the array, don't touch

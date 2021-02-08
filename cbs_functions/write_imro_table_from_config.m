@@ -10,7 +10,7 @@ end
 
 imroTbl = [];
 nchan = 384;
-banks = floor(config./nchan);
+banks = floor((config - 1)./nchan);
 
 imroTbl = fprintf(fid, '(0,%d)', nchan);
 for ichan = 1:nchan
