@@ -11,7 +11,7 @@ switch probe_version
 
         ampscore_bank_assignments = zeros(1, 384);
         for ich = 1:384
-            avail_ass = neuropixel_get_avail_bank_assignments(ich, include_third_bank);
+            avail_ass = neuropixel_get_avail_bank_assignments(ops, ich, include_third_bank);
 
             cand_scores = zeros(1, length(avail_ass));
             for iass = 1:length(avail_ass)

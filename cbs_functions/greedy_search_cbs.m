@@ -45,7 +45,7 @@ for iiter = 1:max_iter
     bank_assignment_chunk = zeros(nchan_all, nchan_all);    
         
     for ch = randperm(nchan_all) % 1 based                
-        avail_ass = neuropixel_get_avail_bank_assignments(ch, include_third_bank);               
+        avail_ass = neuropixel_get_avail_bank_assignments(ops, ch, include_third_bank);               
         J = zeros(1, length(avail_ass));        
         current_ass = bank_assignments(ch);
         
@@ -134,13 +134,13 @@ if do_classifier
         if best_prop_correct*n_units_per_bank' < init_prop_correct*n_units_per_bank'
             disp('defaulting to initial condition');
             best_prop_correct = init_prop_correct;
-            bank_assignments = init_bank_assignments;
+            bank_assignments = bank_assignments_init;
         end
     else
         if all(best_prop_correct < init_prop_correct)        
             disp('defaulting to initial condition');
             best_prop_correct = init_prop_correct;
-            bank_assignments = init_bank_assignments;  
+            bank_assignments = bank_assignments_init;  
         end
     end
 

@@ -27,6 +27,7 @@ assert(length(raw_files) == length(ks_dirs), 'Need a raw file for each KS dir')
 ops.selection_method = 'cbs';  % possible choices: {'cbs', 'mucbs'}
 ops.nspikes_per_unit = 100;    % to match paper, set to 100
 ops.acq_software = 'openephys'; % openephys, spikeglx
+ops.fixed_enabled_channels = fixed_enabled_channels;
 
 %%%%%
 %%%%% Run preprocessing on individual bank recordings
@@ -58,26 +59,6 @@ selection_map = optimize_selection_map(bank_models, ops);
 %%%%%
 %%%%% write output map to an .imro file 
 %%%%% 
-
-for i = 1:length(fixed_enabled_channels)
-    % Parameter gives 0-based channels, convert to 1-based
-    to_enable_channel = fixed_enabled_channels(i) + 1;
-    selection_index = find(selection_map == to_enable_channel, 1);
-    if ~isempty(selection_index)
-        % Already in the array, don't touch
-        continue
-    end
-    if to_enable_channel > 384
-        to_disable_channel = to_enable_channel - 384;
-    else
-        to_disable_channel = to_enable_channel + 384;
-    end
-    selection_index = find(selection_map == to_disable_channel, 1);
-    if isempty(selection_index)
-        error('Could not find EITHER the channel to disable or enable');
-    end
-    selection_map(selection_index) = to_enable_channel;
-end
 
 write_cbs_imro_file(imro_output_filename, selection_map, bank_models);
 
